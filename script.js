@@ -252,3 +252,289 @@ document.querySelectorAll(".role-card").forEach(card => {
   });
 
 });
+// ==========================
+// LOCATION + MAP SYSTEM
+// ==========================
+
+const mapModal = document.getElementById("mapModal");
+const mapTitle = document.getElementById("mapTitle");
+const closeMapBtn = document.getElementById("closeMapBtn");
+const currentLocationBtn =
+  document.getElementById("currentLocationBtn");
+const confirmLocationBtn =
+  document.getElementById("confirmLocationBtn");
+
+let map = null;
+let locationMarker = null;
+
+let selectedLatitude = null;
+let selectedLongitude = null;
+
+let selectingLocation = "pickup";
+
+
+// ==========================
+// OPEN MAP
+// ==========================
+
+function openLocationMap(type) {
+
+  selectingLocation = type;
+
+  if (type === "pickup") {
+    mapTitle.textContent = "Choose Pickup";
+  } else {
+    mapTitle.textContent = "Choose Destination";
+  }
+
+  mapModal.classList.remove("hidden");
+
+  setTimeout(() => {
+
+    if (!map) {
+
+      map = L.map("map").setView(
+        [25.3960, 68.3578],
+        13
+      );
+
+      L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          maxZoom: 19,
+          attribution: "© OpenStreetMap"
+        }
+      ).addTo(map);
+
+    }
+
+    map.invalidateSize();
+
+  }, 200);
+}
+
+
+// ==========================
+// PICKUP CLICK
+// ==========================
+
+document
+  .getElementById("pickupInput")
+  .addEventListener("click", () => {
+
+    openLocationMap("pickup");
+
+  });
+
+
+// ==========================
+// DESTINATION CLICK
+// ==========================
+
+document
+  .getElementById("destinationInput")
+  .addEventListener("click", () => {
+
+    openLocationMap("destination");
+
+  });
+
+
+// ==========================
+// MAP CLICK
+// ==========================
+
+function selectMapLocation(lat, lng) {
+
+  selectedLatitude = lat;
+  selectedLongitude = lng;
+
+  if (locationMarker) {
+    map.removeLayer(locationMarker);
+  }
+
+  locationMarker = L.marker([lat, lng])
+    .addTo(map)
+    .bindPopup("Selected Location")
+    .openPopup();
+
+}
+
+
+// User map par tap kare
+if (document.getElementById("map")) {
+
+  document
+    .getElementById("map")
+    .addEventListener("click", () => {});
+
+}
+
+
+// Leaflet map click
+function enableMapClick() {
+
+  if (!map) return;
+
+  map.on("click", function(e) {
+
+    selectMapLocation(
+      e.latlng.lat,
+      e.latlng.lng
+    );
+
+  });
+
+}
+
+
+// ==========================
+// CURRENT LOCATION
+// ==========================
+
+currentLocationBtn.addEventListener(
+  "click",
+  () => {
+
+    if (!navigator.geolocation) {
+
+      showToast(
+        "Location is not supported on this device"
+      );
+
+      return;
+    }
+
+    showToast("Getting your location...");
+
+    navigator.geolocation.getCurrentPosition(
+
+      (position) => {
+
+        const lat =
+          position.coords.latitude;
+
+        const lng =
+          position.coords.longitude;
+
+        selectedLatitude = lat;
+        selectedLongitude = lng;
+
+        map.setView(
+          [lat, lng],
+          16
+        );
+
+        if (locationMarker) {
+          map.removeLayer(locationMarker);
+        }
+
+        locationMarker =
+          L.marker([lat, lng])
+            .addTo(map)
+            .bindPopup("📍 Your Location")
+            .openPopup();
+
+        showToast(
+          "Location found successfully 📍"
+        );
+
+      },
+
+      () => {
+
+        showToast(
+          "Please allow location access"
+        );
+
+      },
+
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+
+    );
+
+  }
+);
+
+
+// ==========================
+// CONFIRM LOCATION
+// ==========================
+
+confirmLocationBtn.addEventListener(
+  "click",
+  async () => {
+
+    if (
+      selectedLatitude === null ||
+      selectedLongitude === null
+    ) {
+
+      showToast(
+        "Please select a location first"
+      );
+
+      return;
+    }
+
+    const lat = selectedLatitude;
+    const lng = selectedLongitude;
+
+    const locationName =
+      `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+
+    if (selectingLocation === "pickup") {
+
+      document.getElementById(
+        "pickupInput"
+      ).value = locationName;
+
+    } else {
+
+      document.getElementById(
+        "destinationInput"
+      ).value = locationName;
+
+    }
+
+    mapModal.classList.add("hidden");
+
+    showToast(
+      selectingLocation === "pickup"
+        ? "Pickup location selected 📍"
+        : "Destination selected 📍"
+    );
+
+  }
+);
+
+
+// ==========================
+// CLOSE MAP
+// ==========================
+
+closeMapBtn.addEventListener(
+  "click",
+  () => {
+
+    mapModal.classList.add("hidden");
+
+  }
+);
+
+
+// ==========================
+// ENABLE MAP CLICK
+// ==========================
+
+setTimeout(() => {
+
+  if (map) {
+    enableMapClick();
+  }
+
+}, 1000);
