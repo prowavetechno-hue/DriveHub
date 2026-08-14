@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#06140f">
+  <title>DriveHub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- SPLASH -->
+  <section id="splash" class="screen splash-screen">
+    <img src="assets/drivehub-logo.jpg" class="splash-logo" alt="DriveHub">
+    <div class="loader"><span></span></div>
+    <p>YOUR EVERYDAY RIDE PARTNER</p>
+  </section>
+
+  <!-- LOGIN -->
+  <section id="loginScreen" class="screen auth-screen hidden">
+
+    <div class="auth-top">
+      <div class="small-logo">D</div>
+      <span>DriveHub</span>
+    </div>
+
+    <div class="auth-content">
+
+      <p class="gold-label">WELCOME TO DRIVEHUB</p>
+
+      <h1>Let's get<br><span>moving.</span></h1>
+
+      <p class="auth-subtitle">
+        Safe rides. Trusted drivers. Better journeys.
+      </p>
+
+      <div class="input-group">
+        <label>Mobile Number</label>
+        <div class="phone-input">
+          <span>🇵🇰 +92</span>
+          <input id="phone" type="tel" placeholder="300 1234567">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input id="password" class="normal-input"
+               type="password"
+               placeholder="Enter your password">
+      </div>
+
+      <button id="loginBtn" class="main-btn">
+        Login
+        <span>→</span>
+      </button>
+
+      <div class="divider">
+        <span>OR</span>
+      </div>
+
+      <button id="signupBtn" class="outline-btn">
+        Create New Account
+      </button>
+
+      <p class="terms">
+        By continuing, you agree to DriveHub's
+        <b>Terms & Privacy Policy</b>.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- ROLE SELECTION -->
+  <section id="roleScreen" class="screen auth-screen hidden">
+
+    <div class="auth-content role-content">
+
+      <p class="gold-label">ONE ACCOUNT • TWO JOURNEYS</p>
+
+      <h1>How will you<br><span>use DriveHub?</span></h1>
+
+      <p class="auth-subtitle">
+        Choose your account type to continue.
+      </p>
+
+      <button class="role-card" data-role="rider">
+        <div class="role-icon">🚗</div>
+        <div>
+          <strong>I'm a Rider</strong>
+          <small>Book safe and reliable rides</small>
+        </div>
+        <span>→</span>
+      </button>
+
+      <button class="role-card" data-role="driver">
+        <div class="role-icon">🧑‍✈️</div>
+        <div>
+          <strong>I'm a Driver</strong>
+          <small>Drive, earn and grow with us</small>
+        </div>
+        <span>→</span>
+      </button>
+
+      <button id="backLogin" class="back-btn">
+        ← Back to Login
+      </button>
+
+    </div>
+  </section>
+
+  <!-- SIGNUP -->
+  <section id="signupScreen" class="screen auth-screen hidden">
+
+    <div class="auth-content">
+
+      <p class="gold-label">CREATE YOUR ACCOUNT</p>
+
+      <h1>Join<br><span>DriveHub.</span></h1>
+
+      <div class="input-group">
+        <label>Full Name</label>
+        <input id="signupName" class="normal-input"
+               type="text"
+               placeholder="Enter your name">
+      </div>
+
+      <div class="input-group">
+        <label>Mobile Number</label>
+        <div class="phone-input">
+          <span>🇵🇰 +92</span>
+          <input id="signupPhone" type="tel"
+                 placeholder="300 1234567">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input id="signupPassword"
+               class="normal-input"
+               type="password"
+               placeholder="Create password">
+      </div>
+
+      <button id="createAccountBtn" class="main-btn">
+        Create Account
+        <span>→</span>
+      </button>
+
+      <button id="backToLogin" class="back-btn">
+        ← Already have an account?
+      </button>
+
+    </div>
+  </section>
+<!-- =========================
+     RIDER DASHBOARD
+========================= -->
+
+<section
+  id="riderDashboard"
+  class="screen dashboard-screen hidden"
+>
+
+  <header class="dashboard-header">
+
+    <div class="dashboard-brand">
+
+      <img
+        src="assets/drivehub-logo.jpg"
+        class="dashboard-logo"
+        alt="DriveHub"
+      >
+
+      <div>
+        <strong>DriveHub</strong>
+        <small>RIDER</small>
+      </div>
+
+    </div>
+
+    <button
+      id="notificationBtn"
+      class="dashboard-icon"
+    >
+      🔔
+    </button>
+
+  </header>
+
+
+  <div class="dashboard-greeting">
+
+    <p>WELCOME BACK 👋</p>
+
+    <h1>
+      Where are you<br>
+      <span>going today?</span>
+    </h1>
+
+  </div>
+
+
+  <!-- BOOK RIDE -->
+
+  <div class="booking-card">
+
+    <div class="booking-heading">
+
+      <div>
+        <small>BOOK A RIDE</small>
+        <h2>Plan your journey</h2>
+      </div>
+
+      <span class="online-badge">
+        ● Available
+      </span>
+
+    </div>
+
+
+    <div class="location-box">
+
+      <span class="location-dot pickup"></span>
+
+      <div>
+        <label>Pickup</label>
+
+        <input
+          id="pickupInput"
+          type="text"
+          placeholder="Where are you?"
+        >
+      </div>
+
+    </div>
+
+
+    <div class="location-connector"></div>
+
+
+    <div class="location-box">
+
+      <span class="location-dot destination"></span>
+
+      <div>
+        <label>Destination</label>
+
+        <input
+          id="destinationInput"
+          type="text"
+          placeholder="Where do you want to go?"
+        >
+      </div>
+
+    </div>
+
+
+    <button
+      id="findRideBtn"
+      class="find-ride-btn"
+    >
+      Find a Ride
+      <span>→</span>
+    </button>
+
+  </div>
+
+
+  <!-- RIDE OPTIONS -->
+
+  <div class="dashboard-section">
+
+    <div class="section-heading">
+
+      <h3>Choose your ride</h3>
+
+      <span>Available</span>
+
+    </div>
+
+
+    <div class="ride-options">
+
+      <button
+        class="ride-option active"
+        data-ride="DriveHub Go"
+      >
+
+        <div class="vehicle-icon">
+          🚗
+        </div>
+
+        <div class="ride-details">
+
+          <strong>DriveHub Go</strong>
+
+          <small>
+            Affordable everyday ride
+          </small>
+
+        </div>
+
+        <div class="ride-fare">
+          <strong>Rs. —</strong>
+          <small>Estimate</small>
+        </div>
+
+      </button>
+
+
+      <button
+        class="ride-option"
+        data-ride="DriveHub Plus"
+      >
+
+        <div class="vehicle-icon">
+          🚘
+        </div>
+
+        <div class="ride-details">
+
+          <strong>DriveHub Plus</strong>
+
+          <small>
+            More comfort for your journey
+          </small>
+
+        </div>
+
+        <div class="ride-fare">
+          <strong>Rs. —</strong>
+          <small>Estimate</small>
+        </div>
+
+      </button>
+
+
+      <button
+        class="ride-option"
+        data-ride="DriveHub XL"
+      >
+
+        <div class="vehicle-icon">
+          🚙
+        </div>
+
+        <div class="ride-details">
+
+          <strong>DriveHub XL</strong>
+
+          <small>
+            Extra space for groups
+          </small>
+
+        </div>
+
+        <div class="ride-fare">
+          <strong>Rs. —</strong>
+          <small>Estimate</small>
+        </div>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- TRUST -->
+
+  <div class="trust-row">
+
+    <div>
+      <b>✓</b>
+      <span>Verified drivers</span>
+    </div>
+
+    <div>
+      <b>★</b>
+      <span>Top rated</span>
+    </div>
+
+    <div>
+      <b>🛡</b>
+      <span>Safe rides</span>
+    </div>
+
+  </div>
+
+
+  <!-- BOTTOM NAV -->
+
+  <nav class="dashboard-nav">
+
+    <button class="nav-item active">
+      <span>⌂</span>
+      Home
+    </button>
+
+    <button class="nav-item">
+      <span>◷</span>
+      Rides
+    </button>
+
+    <button class="nav-item">
+      <span>💳</span>
+      Wallet
+    </button>
+
+    <button class="nav-item">
+      <span>●</span>
+      Profile
+    </button>
+
+  </nav>
+
+</section>
+  <div id="toast" class="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
