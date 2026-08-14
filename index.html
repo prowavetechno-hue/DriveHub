@@ -6,6 +6,14 @@
   <meta name="theme-color" content="#06140f">
   <title>DriveHub</title>
   <link rel="stylesheet" href="style.css">
+  <link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
 </head>
 
 <body>
@@ -152,6 +160,36 @@
       </button>
 
     </div>
+    <!-- LOCATION MAP MODAL -->
+
+<div id="mapModal" class="map-modal hidden">
+
+  <div class="map-modal-card">
+
+    <div class="map-modal-header">
+      <div>
+        <small>SELECT LOCATION</small>
+        <h2 id="mapTitle">Choose Pickup</h2>
+      </div>
+
+      <button id="closeMapBtn" class="map-close-btn">
+        ×
+      </button>
+    </div>
+
+    <div id="map"></div>
+
+    <button id="currentLocationBtn" class="location-access-btn">
+      📍 Use My Current Location
+    </button>
+
+    <button id="confirmLocationBtn" class="confirm-location-btn">
+      Confirm Location →
+    </button>
+
+  </div>
+
+</div>
   </section>
 <!-- =========================
      RIDER DASHBOARD
@@ -227,10 +265,11 @@
         <label>Pickup</label>
 
         <input
-          id="pickupInput"
-          type="text"
-          placeholder="Where are you?"
-        >
+  id="pickupInput"
+  type="text"
+  placeholder="Where are you?"
+  readonly
+>
       </div>
 
     </div>
@@ -247,10 +286,11 @@
         <label>Destination</label>
 
         <input
-          id="destinationInput"
-          type="text"
-          placeholder="Where do you want to go?"
-        >
+  id="destinationInput"
+  type="text"
+  placeholder="Where do you want to go?"
+  readonly
+>
       </div>
 
     </div>
