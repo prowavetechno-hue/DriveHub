@@ -1,579 +1,1090 @@
-const splash = document.getElementById("splash");
-const loginScreen = document.getElementById("loginScreen");
-const roleScreen = document.getElementById("roleScreen");
-const signupScreen = document.getElementById("signupScreen");
-const riderDashboard = document.getElementById("riderDashboard");
-const toast = document.getElementById("toast");
+/* =========================================
+   PROWAVE SUPERMARKET
+   FINAL JAVASCRIPT
+   ========================================= */
 
 
-// ==========================
-// SCREEN CONTROL
-// ==========================
+/* =========================================
+   GAME DATA
+   ========================================= */
 
-function showScreen(screen) {
-  splash.classList.add("hidden");
-  loginScreen.classList.add("hidden");
-  roleScreen.classList.add("hidden");
-  signupScreen.classList.add("hidden");
-  riderDashboard.classList.add("hidden");
+let game = {
+    cash: 50000,
+    level: 1,
+    sales: 0,
+    profit: 0,
+    customers: 0,
+    storeOpen: false
+};
 
-  screen.classList.remove("hidden");
+
+/* =========================================
+   PRODUCTS
+   ========================================= */
+
+const products = [
+    {
+        id: "milk",
+        name: "Milk",
+        icon: "🥛",
+        buy: 150,
+        sell: 190,
+        stock: 0
+    },
+    {
+        id: "bread",
+        name: "Bread",
+        icon: "🍞",
+        buy: 100,
+        sell: 140,
+        stock: 0
+    },
+    {
+        id: "biscuits",
+        name: "Biscuits",
+        icon: "🍪",
+        buy: 80,
+        sell: 120,
+        stock: 0
+    },
+    {
+        id: "drink",
+        name: "Cold Drink",
+        icon: "🥤",
+        buy: 100,
+        sell: 150,
+        stock: 0
+    },
+    {
+        id: "chips",
+        name: "Chips",
+        icon: "🍟",
+        buy: 70,
+        sell: 110,
+        stock: 0
+    },
+    {
+        id: "rice",
+        name: "Rice",
+        icon: "🍚",
+        buy: 250,
+        sell: 320,
+        stock: 0
+    },
+    {
+        id: "eggs",
+        name: "Eggs",
+        icon: "🥚",
+        buy: 220,
+        sell: 280,
+        stock: 0
+    },
+    {
+        id: "water",
+        name: "Water",
+        icon: "💧",
+        buy: 60,
+        sell: 90,
+        stock: 0
+    }
+];
+
+
+/* =========================================
+   SCREEN NAVIGATION
+   ========================================= */
+
+function openScreen(screenId) {
+
+    const screens =
+        document.querySelectorAll(".screen");
+
+    screens.forEach(function(screen) {
+        screen.classList.remove("active");
+    });
+
+    const selected =
+        document.getElementById(screenId);
+
+    if (selected) {
+        selected.classList.add("active");
+    }
+
+    updateAll();
 }
 
 
-// ==========================
-// TOAST
-// ==========================
-
-function showToast(message) {
-  toast.textContent = message;
-  toast.classList.add("show");
-
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2200);
+function goHome() {
+    openScreen("homeScreen");
 }
 
 
-// ==========================
-// SPLASH
-// ==========================
+/* =========================================
+   MONEY DISPLAY
+   ========================================= */
 
-window.addEventListener("load", () => {
+function updateMoney() {
 
-  setTimeout(() => {
-    showScreen(loginScreen);
-  }, 1800);
+    const amount =
+        "Rs. " + game.cash.toLocaleString();
 
-});
+    const cash =
+        document.getElementById("cash");
+
+    const storeCash =
+        document.getElementById("storeCash");
+
+    if (cash) {
+        cash.textContent = amount;
+    }
+
+    if (storeCash) {
+        storeCash.textContent = amount;
+    }
+}
 
 
-// ==========================
-// LOGIN
-// ==========================
+/* =========================================
+   NOTIFICATION
+   ========================================= */
 
-document.getElementById("loginBtn").addEventListener("click", () => {
+function notify(message) {
 
-  const phone =
-    document.getElementById("phone").value.trim();
+    const box =
+        document.getElementById("notification");
 
-  const password =
-    document.getElementById("password").value.trim();
+    if (!box) {
+        return;
+    }
 
-  if (!phone) {
-    showToast("Please enter your mobile number");
-    return;
-  }
+    box.textContent = message;
 
-  if (!password) {
-    showToast("Please enter your password");
-    return;
-  }
+    box.classList.add("show");
 
-  const savedAccount =
-    localStorage.getItem("drivehubAccount");
+    setTimeout(function() {
+        box.classList.remove("show");
+    }, 2000);
+}
 
-  if (!savedAccount) {
-    showToast(
-      "No account found. Please create an account first."
+
+/* =========================================
+   MARKET
+   ========================================= */
+
+function renderMarket() {
+
+    const container =
+        document.getElementById("marketProducts");
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    products.forEach(function(product) {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "product-card";
+
+        card.innerHTML = `
+            <div class="product-icon">
+                ${product.icon}
+            </div>
+
+            <h3>
+                ${product.name}
+            </h3>
+
+            <p>
+                Wholesale:
+                Rs. ${product.buy}
+            </p>
+
+            <p>
+                Selling:
+                Rs. ${product.sell}
+            </p>
+
+            <p>
+                Stock:
+                ${product.stock}
+            </p>
+
+            <button
+                data-buy="${product.id}"
+            >
+                📦 BUY 1
+            </button>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+
+/* =========================================
+   BUY PRODUCT
+   ========================================= */
+
+function buyProduct(productId) {
+
+    const product =
+        products.find(function(item) {
+            return item.id === productId;
+        });
+
+    if (!product) {
+        return;
+    }
+
+    if (game.cash < product.buy) {
+
+        notify("❌ Not enough cash!");
+
+        return;
+    }
+
+    game.cash -= product.buy;
+
+    product.stock += 1;
+
+    renderMarket();
+
+    renderInventory();
+
+    updateMoney();
+
+    notify(
+        "📦 " +
+        product.name +
+        " added to stock!"
     );
-    return;
-  }
-
-  const account = JSON.parse(savedAccount);
-
-  if (
-    account.phone !== phone ||
-    account.password !== password
-  ) {
-    showToast(
-      "Incorrect mobile number or password"
-    );
-    return;
-  }
-
-  localStorage.setItem(
-    "drivehubLoggedIn",
-    "true"
-  );
-
-  showToast("Login successful");
-
-  setTimeout(() => {
-    showScreen(roleScreen);
-  }, 700);
-
-});
+}
 
 
-// ==========================
-// SIGNUP SCREEN
-// ==========================
+/* =========================================
+   INVENTORY
+   ========================================= */
 
-document.getElementById("signupBtn").addEventListener(
-  "click",
-  () => {
-    showScreen(signupScreen);
-  }
-);
+function renderInventory() {
 
+    const container =
+        document.getElementById(
+            "inventoryProducts"
+        );
 
-// ==========================
-// BACK TO LOGIN
-// ==========================
-
-document.getElementById("backToLogin").addEventListener(
-  "click",
-  () => {
-    showScreen(loginScreen);
-  }
-);
-
-
-// ==========================
-// CREATE ACCOUNT
-// ==========================
-
-document.getElementById("createAccountBtn").addEventListener(
-  "click",
-  () => {
-
-    const name =
-      document.getElementById("signupName").value.trim();
-
-    const phone =
-      document.getElementById("signupPhone").value.trim();
-
-    const password =
-      document.getElementById("signupPassword").value.trim();
-
-
-    if (!name) {
-      showToast("Please enter your name");
-      return;
+    if (!container) {
+        return;
     }
 
-    if (!phone) {
-      showToast("Please enter your mobile number");
-      return;
+    container.innerHTML = "";
+
+    products.forEach(function(product) {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "product-card";
+
+        const disabled =
+            product.stock <= 0
+                ? "disabled"
+                : "";
+
+        const profit =
+            product.sell - product.buy;
+
+        card.innerHTML = `
+            <div class="product-icon">
+                ${product.icon}
+            </div>
+
+            <h3>
+                ${product.name}
+            </h3>
+
+            <p>
+                Stock:
+                ${product.stock}
+            </p>
+
+            <p>
+                Selling:
+                Rs. ${product.sell}
+            </p>
+
+            <p>
+                Profit:
+                Rs. ${profit}
+            </p>
+
+            <button
+                data-sell="${product.id}"
+                ${disabled}
+            >
+                💰 SELL 1
+            </button>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+
+/* =========================================
+   SELL PRODUCT
+   ========================================= */
+
+function sellProduct(productId) {
+
+    const product =
+        products.find(function(item) {
+            return item.id === productId;
+        });
+
+    if (!product) {
+        return;
     }
 
-    if (!password) {
-      showToast("Please create a password");
-      return;
-    }
+    if (product.stock <= 0) {
 
-    if (password.length < 6) {
-      showToast(
-        "Password must be at least 6 characters"
-      );
-      return;
-    }
-
-
-    const existingAccount =
-      localStorage.getItem("drivehubAccount");
-
-
-    if (existingAccount) {
-
-      const account =
-        JSON.parse(existingAccount);
-
-      if (account.phone === phone) {
-
-        showToast(
-          "This mobile number is already registered"
+        notify(
+            "❌ " +
+            product.name +
+            " is out of stock!"
         );
 
         return;
-      }
     }
 
+    product.stock -= 1;
 
-    const newAccount = {
+    game.cash += product.sell;
 
-      name: name,
-      phone: phone,
-      password: password,
-      role: null,
-      createdAt: new Date().toISOString()
+    game.sales += product.sell;
 
-    };
+    game.profit +=
+        product.sell - product.buy;
 
+    renderInventory();
 
-    localStorage.setItem(
-      "drivehubAccount",
-      JSON.stringify(newAccount)
+    renderMarket();
+
+    updateMoney();
+
+    notify(
+        "💰 " +
+        product.name +
+        " sold!"
     );
-
-
-    showToast(
-      "Account created successfully"
-    );
-
-
-    setTimeout(() => {
-      showScreen(roleScreen);
-    }, 700);
-
-  }
-);
-
-
-// ==========================
-// ROLE SELECTION
-// ==========================
-
-document.querySelectorAll(".role-card").forEach(
-  card => {
-
-    card.addEventListener("click", () => {
-
-      const role = card.dataset.role;
-
-
-      if (role === "rider") {
-
-        showToast(
-          "Welcome to DriveHub Rider 🚗"
-        );
-
-        setTimeout(() => {
-          showScreen(riderDashboard);
-        }, 700);
-
-      }
-
-
-      if (role === "driver") {
-
-        showToast(
-          "Driver Dashboard coming next 🧑‍✈️"
-        );
-
-      }
-
-    });
-
-  }
-);
-
-
-// ==========================
-// DRIVEHUB MAP
-// ==========================
-
-const mapBox =
-  document.getElementById("mapBox");
-
-const mapTitle =
-  document.getElementById("mapTitle");
-
-const closeMapBtn =
-  document.getElementById("closeMapBtn");
-
-const currentLocationBtn =
-  document.getElementById("currentLocationBtn");
-
-const confirmLocationBtn =
-  document.getElementById("confirmLocationBtn");
-
-const pickupInput =
-  document.getElementById("pickupInput");
-
-const destinationInput =
-  document.getElementById("destinationInput");
-
-
-let driveHubMap = null;
-let selectedMarker = null;
-
-let selectedLat = null;
-let selectedLng = null;
-
-let selectingType = "pickup";
-
-
-// ==========================
-// OPEN MAP
-// ==========================
-
-function openDriveHubMap(type) {
-
-  selectingType = type;
-
-
-  if (type === "pickup") {
-    mapTitle.textContent = "Choose Pickup";
-  } else {
-    mapTitle.textContent = "Choose Destination";
-  }
-
-
-  mapBox.classList.remove("hidden");
-
-
-  setTimeout(() => {
-
-    if (!driveHubMap) {
-
-      driveHubMap =
-        L.map("map").setView(
-          [25.3960, 68.3578],
-          13
-        );
-
-
-      L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-          maxZoom: 19,
-          attribution: "© OpenStreetMap"
-        }
-      ).addTo(driveHubMap);
-
-
-      driveHubMap.on(
-        "click",
-        function(e) {
-
-          selectDriveHubLocation(
-            e.latlng.lat,
-            e.latlng.lng
-          );
-
-        }
-      );
-
-    }
-
-
-    driveHubMap.invalidateSize();
-
-  }, 200);
-
 }
 
 
-// ==========================
-// SELECT MAP LOCATION
-// ==========================
+/* =========================================
+   STORE
+   ========================================= */
 
-function selectDriveHubLocation(
-  lat,
-  lng
-) {
+function toggleStore() {
 
-  selectedLat = lat;
-  selectedLng = lng;
+    game.storeOpen =
+        !game.storeOpen;
 
-
-  if (selectedMarker) {
-
-    driveHubMap.removeLayer(
-      selectedMarker
-    );
-
-  }
-
-
-  selectedMarker =
-    L.marker([
-      lat,
-      lng
-    ])
-    .addTo(driveHubMap)
-    .bindPopup(
-      "📍 Selected Location"
-    )
-    .openPopup();
-
-}
-
-
-// ==========================
-// PICKUP
-// ==========================
-
-pickupInput.addEventListener(
-  "click",
-  () => {
-
-    openDriveHubMap("pickup");
-
-  }
-);
-
-
-// ==========================
-// DESTINATION
-// ==========================
-
-destinationInput.addEventListener(
-  "click",
-  () => {
-
-    openDriveHubMap("destination");
-
-  }
-);
-
-
-// ==========================
-// CURRENT LOCATION
-// ==========================
-
-currentLocationBtn.addEventListener(
-  "click",
-  () => {
-
-    if (!navigator.geolocation) {
-
-      showToast(
-        "Location is not supported"
-      );
-
-      return;
-    }
-
-
-    showToast(
-      "Getting your location..."
-    );
-
-
-    navigator.geolocation.getCurrentPosition(
-
-      position => {
-
-        const lat =
-          position.coords.latitude;
-
-        const lng =
-          position.coords.longitude;
-
-
-        selectedLat = lat;
-        selectedLng = lng;
-
-
-        driveHubMap.setView(
-          [lat, lng],
-          16
+    const button =
+        document.getElementById(
+            "openStoreButton"
         );
 
+    if (game.storeOpen) {
 
-        if (selectedMarker) {
+        button.textContent =
+            "⏹ CLOSE STORE";
 
-          driveHubMap.removeLayer(
-            selectedMarker
-          );
-
-        }
-
-
-        selectedMarker =
-          L.marker([
-            lat,
-            lng
-          ])
-          .addTo(driveHubMap)
-          .bindPopup(
-            "📍 Your Current Location"
-          )
-          .openPopup();
-
-
-        showToast(
-          "Location found 📍"
+        notify(
+            "🏪 Prowave Supermarket is OPEN!"
         );
 
-      },
-
-
-      () => {
-
-        showToast(
-          "Please allow location access"
-        );
-
-      },
-
-
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-      }
-
-    );
-
-  }
-);
-
-
-// ==========================
-// CONFIRM LOCATION
-// ==========================
-
-confirmLocationBtn.addEventListener(
-  "click",
-  () => {
-
-    if (
-      selectedLat === null ||
-      selectedLng === null
-    ) {
-
-      showToast(
-        "Please select a location first"
-      );
-
-      return;
-    }
-
-
-    const locationText =
-      `${selectedLat.toFixed(5)}, ${selectedLng.toFixed(5)}`;
-
-
-    if (selectingType === "pickup") {
-
-      pickupInput.value =
-        locationText;
-
-      showToast(
-        "Pickup location selected 📍"
-      );
+        startCustomers();
 
     } else {
 
-      destinationInput.value =
-        locationText;
+        button.textContent =
+            "▶ OPEN STORE";
 
-      showToast(
-        "Destination selected 📍"
-      );
+        stopCustomers();
 
+        notify(
+            "🏪 Store closed."
+        );
+    }
+}
+
+
+/* =========================================
+   CUSTOMER SYSTEM
+   ========================================= */
+
+let customerTimer = null;
+
+
+function startCustomers() {
+
+    stopCustomers();
+
+    customerTimer =
+        setInterval(function() {
+
+            if (!game.storeOpen) {
+                return;
+            }
+
+            createCustomer();
+
+        }, 5000);
+}
+
+
+function stopCustomers() {
+
+    if (customerTimer !== null) {
+
+        clearInterval(customerTimer);
+
+        customerTimer = null;
+    }
+}
+
+
+/* =========================================
+   CREATE CUSTOMER
+   ========================================= */
+
+function createCustomer() {
+
+    const area =
+        document.getElementById(
+            "customerArea"
+        );
+
+    if (!area) {
+        return;
     }
 
+    const available =
+        products.filter(function(product) {
+            return product.stock > 0;
+        });
 
-    mapBox.classList.add("hidden");
+    if (available.length === 0) {
 
-  }
+        notify(
+            "⚠️ Buy stock first!"
+        );
+
+        return;
+    }
+
+    const index =
+        Math.floor(
+            Math.random() * available.length
+        );
+
+    const product =
+        available[index];
+
+    const customer =
+        document.createElement("div");
+
+    customer.className =
+        "customer-card";
+
+    customer.style.cssText =
+        "display:flex;align-items:center;gap:10px;padding:12px;margin-bottom:8px;border-radius:12px;background:#151c18;";
+
+    customer.innerHTML = `
+        <span style="font-size:28px;">
+            🧑
+        </span>
+
+        <div style="flex:1;">
+            <strong>
+                Customer
+            </strong>
+
+            <p style="color:#8d9992;font-size:10px;margin-top:4px;">
+                Wants ${product.name}
+            </p>
+        </div>
+
+        <button
+            data-serve="${product.id}"
+            style="padding:9px;border:0;border-radius:8px;background:#27d875;font-weight:bold;"
+        >
+            SERVE
+        </button>
+    `;
+
+    const empty =
+        area.querySelector(
+            ".empty-customers"
+        );
+
+    if (empty) {
+        empty.remove();
+    }
+
+    area.appendChild(customer);
+
+    game.customers += 1;
+}
+
+
+/* =========================================
+   SERVE CUSTOMER
+   ========================================= */
+
+function serveCustomer(
+    customerElement,
+    productId
+) {
+
+    const product =
+        products.find(function(item) {
+            return item.id === productId;
+        });
+
+    if (!product) {
+        return;
+    }
+
+    if (product.stock <= 0) {
+
+        notify(
+            "❌ Product is out of stock!"
+        );
+
+        return;
+    }
+
+    product.stock -= 1;
+
+    game.cash += product.sell;
+
+    game.sales += product.sell;
+
+    game.profit +=
+        product.sell - product.buy;
+
+    customerElement.remove();
+
+    renderMarket();
+
+    renderInventory();
+
+    updateMoney();
+
+    notify(
+        "💰 Customer purchased " +
+        product.name + "!"
+    );
+}
+
+
+/* =========================================
+   UPGRADES
+   ========================================= */
+
+const upgrades = [
+    {
+        id: "size",
+        name: "🏪 Bigger Store",
+        description:
+            "Increase your supermarket level.",
+        cost: 10000
+    },
+    {
+        id: "shelves",
+        name: "🗄️ More Shelves",
+        description:
+            "Make your store look bigger.",
+        cost: 7500
+    },
+    {
+        id: "checkout",
+        name: "🧾 Faster Checkout",
+        description:
+            "Serve customers faster.",
+        cost: 12000
+    }
+];
+
+
+function renderUpgrades() {
+
+    const container =
+        document.getElementById(
+            "upgradeList"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    upgrades.forEach(function(upgrade) {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "upgrade-card";
+
+        card.innerHTML = `
+            <h3>
+                ${upgrade.name}
+            </h3>
+
+            <p>
+                ${upgrade.description}
+            </p>
+
+            <p>
+                Level:
+                ${game.level}
+            </p>
+
+            <button
+                data-upgrade="${upgrade.id}"
+            >
+                Upgrade — Rs. ${upgrade.cost.toLocaleString()}
+            </button>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+
+/* =========================================
+   BUY UPGRADE
+   ========================================= */
+
+function buyUpgrade(upgradeId) {
+
+    const upgrade =
+        upgrades.find(function(item) {
+            return item.id === upgradeId;
+        });
+
+    if (!upgrade) {
+        return;
+    }
+
+    if (game.cash < upgrade.cost) {
+
+        notify(
+            "❌ Not enough cash!"
+        );
+
+        return;
+    }
+
+    game.cash -= upgrade.cost;
+
+    game.level += 1;
+
+    renderUpgrades();
+
+    updateMoney();
+
+    notify(
+        "⬆️ Store upgraded to Level " +
+        game.level + "!"
+    );
+}
+
+
+/* =========================================
+   SUPPLIERS
+   ========================================= */
+
+const suppliers = [
+    {
+        id: "fresh",
+        name: "🥛 Fresh Foods Supplier",
+        description:
+            "Milk, bread and eggs.",
+        cost: 1500,
+        products: ["milk", "bread", "eggs"]
+    },
+    {
+        id: "drinks",
+        name: "🥤 Drinks Supplier",
+        description:
+            "Cold drinks and water.",
+        cost: 1200,
+        products: ["drink", "water"]
+    },
+    {
+        id: "snacks",
+        name: "🍪 Snacks Supplier",
+        description:
+            "Biscuits and chips.",
+        cost: 1000,
+        products: ["biscuits", "chips"]
+    }
+];
+
+
+function renderSuppliers() {
+
+    const container =
+        document.getElementById(
+            "supplierList"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    suppliers.forEach(function(supplier) {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "supplier-card";
+
+        card.innerHTML = `
+            <h3>
+                ${supplier.name}
+            </h3>
+
+            <p>
+                ${supplier.description}
+            </p>
+
+            <button
+                data-supplier="${supplier.id}"
+            >
+                Order — Rs. ${supplier.cost.toLocaleString()}
+            </button>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+
+function orderSupplier(supplierId) {
+
+    const supplier =
+        suppliers.find(function(item) {
+            return item.id === supplierId;
+        });
+
+    if (!supplier) {
+        return;
+    }
+
+    if (game.cash < supplier.cost) {
+
+        notify(
+            "❌ Not enough cash!"
+        );
+
+        return;
+    }
+
+    game.cash -= supplier.cost;
+
+    supplier.products.forEach(
+        function(productId) {
+
+            const product =
+                products.find(
+                    function(item) {
+                        return item.id === productId;
+                    }
+                );
+
+            if (product) {
+                product.stock += 3;
+            }
+        }
+    );
+
+    renderMarket();
+
+    renderInventory();
+
+    updateMoney();
+
+    notify(
+        "🚚 Supplier delivery received!"
+    );
+}
+
+
+/* =========================================
+   MISSIONS
+   ========================================= */
+
+const missions = [
+    {
+        id: "sales",
+        name: "💰 First Sales",
+        description:
+            "Make your first sale.",
+        reward: 1000
+    },
+    {
+        id: "profit",
+        name: "📈 Small Business",
+        description:
+            "Earn Rs. 2,000 profit.",
+        reward: 2500
+    },
+    {
+        id: "customers",
+        name: "🛍️ Customer Rush",
+        description:
+            "Attract 5 customers.",
+        reward: 3000
+    }
+];
+
+
+function renderMissions() {
+
+    const container =
+        document.getElementById(
+            "missionList"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    missions.forEach(function(mission) {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "mission-card";
+
+        let progress = 0;
+
+        if (mission.id === "sales") {
+            progress =
+                game.sales > 0 ? 1 : 0;
+        }
+
+        if (mission.id === "profit") {
+            progress =
+                Math.min(
+                    game.profit / 2000,
+                    1
+                );
+        }
+
+        if (mission.id === "customers") {
+            progress =
+                Math.min(
+                    game.customers / 5,
+                    1
+                );
+        }
+
+        card.innerHTML = `
+            <h3>
+                ${mission.name}
+            </h3>
+
+            <p>
+                ${mission.description}
+            </p>
+
+            <p>
+                Progress:
+                ${Math.floor(progress * 100)}%
+            </p>
+
+            <p>
+                Reward:
+                Rs. ${mission.reward.toLocaleString()}
+            </p>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+
+/* =========================================
+   UPDATE EVERYTHING
+   ========================================= */
+
+function updateAll() {
+
+    updateMoney();
+
+    renderMarket();
+
+    renderInventory();
+
+    renderUpgrades();
+
+    renderSuppliers();
+
+    renderMissions();
+}
+
+
+/* =========================================
+   BUTTON EVENTS
+   ========================================= */
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const screenButton =
+            event.target.closest(
+                "[data-screen]"
+            );
+
+        if (screenButton) {
+
+            const screenId =
+                screenButton.getAttribute(
+                    "data-screen"
+                );
+
+            openScreen(screenId);
+
+            return;
+        }
+
+
+        const buyButton =
+            event.target.closest(
+                "[data-buy]"
+            );
+
+        if (buyButton) {
+
+            buyProduct(
+                buyButton.getAttribute(
+                    "data-buy"
+                )
+            );
+
+            return;
+        }
+
+
+        const sellButton =
+            event.target.closest(
+                "[data-sell]"
+            );
+
+        if (sellButton) {
+
+            sellProduct(
+                sellButton.getAttribute(
+                    "data-sell"
+                )
+            );
+
+            return;
+        }
+
+
+        const serveButton =
+            event.target.closest(
+                "[data-serve]"
+            );
+
+        if (serveButton) {
+
+            const customer =
+                serveButton.parentElement;
+
+            serveCustomer(
+                customer,
+                serveButton.getAttribute(
+                    "data-serve"
+                )
+            );
+
+            return;
+        }
+
+
+        const upgradeButton =
+            event.target.closest(
+                "[data-upgrade]"
+            );
+
+        if (upgradeButton) {
+
+            buyUpgrade(
+                upgradeButton.getAttribute(
+                    "data-upgrade"
+                )
+            );
+
+            return;
+        }
+
+
+        const supplierButton =
+            event.target.closest(
+                "[data-supplier]"
+            );
+
+        if (supplierButton) {
+
+            orderSupplier(
+                supplierButton.getAttribute(
+                    "data-supplier"
+                )
+            );
+        }
+    }
 );
 
 
-// ==========================
-// CLOSE MAP
-// ==========================
+/* =========================================
+   STORE BUTTON
+   ========================================= */
 
-closeMapBtn.addEventListener(
-  "click",
-  () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
 
-    mapBox.classList.add("hidden");
+        const storeButton =
+            document.getElementById(
+                "openStoreButton"
+            );
 
-  }
+        if (storeButton) {
+
+            storeButton.addEventListener(
+                "click",
+                toggleStore
+            );
+        }
+
+        updateAll();
+    }
 );
