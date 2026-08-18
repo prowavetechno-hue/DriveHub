@@ -1,431 +1,448 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#06140f">
-  <title>DriveHub</title>
-  <link rel="stylesheet" href="style.css">
-  <link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
 
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Prowave Supermarket</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
 </head>
 
 <body>
 
-  <!-- SPLASH -->
-  <section id="splash" class="screen splash-screen">
-    <img src="drivehub-logo.jpg" class="splash-logo" alt="DriveHub">
-    <div class="loader"><span></span></div>
-    <p>YOUR EVERYDAY RIDE PARTNER</p>
-  </section>
-
-  <!-- LOGIN -->
-  <section id="loginScreen" class="screen auth-screen hidden">
-
-    <div class="auth-top">
-      <div class="small-logo">D</div>
-      <span>DriveHub</span>
-    </div>
-
-    <div class="auth-content">
-
-      <p class="gold-label">WELCOME TO DRIVEHUB</p>
-
-      <h1>Let's get<br><span>moving.</span></h1>
-
-      <p class="auth-subtitle">
-        Safe rides. Trusted drivers. Better journeys.
-      </p>
-
-      <div class="input-group">
-        <label>Mobile Number</label>
-        <div class="phone-input">
-          <span>🇵🇰 +92</span>
-          <input id="phone" type="tel" placeholder="300 1234567">
-        </div>
-      </div>
-
-      <div class="input-group">
-        <label>Password</label>
-        <input id="password" class="normal-input"
-               type="password"
-               placeholder="Enter your password">
-      </div>
-
-      <button id="loginBtn" class="main-btn">
-        Login
-        <span>→</span>
-      </button>
-
-      <div class="divider">
-        <span>OR</span>
-      </div>
-
-      <button id="signupBtn" class="outline-btn">
-        Create New Account
-      </button>
-
-      <p class="terms">
-        By continuing, you agree to DriveHub's
-        <b>Terms & Privacy Policy</b>.
-      </p>
-
-    </div>
-  </section>
-
-  <!-- ROLE SELECTION -->
-  <section id="roleScreen" class="screen auth-screen hidden">
-
-    <div class="auth-content role-content">
-
-      <p class="gold-label">ONE ACCOUNT • TWO JOURNEYS</p>
-
-      <h1>How will you<br><span>use DriveHub?</span></h1>
-
-      <p class="auth-subtitle">
-        Choose your account type to continue.
-      </p>
-
-      <button class="role-card" data-role="rider">
-        <div class="role-icon">🚗</div>
-        <div>
-          <strong>I'm a Rider</strong>
-          <small>Book safe and reliable rides</small>
-        </div>
-        <span>→</span>
-      </button>
-
-      <button class="role-card" data-role="driver">
-        <div class="role-icon">🧑‍✈️</div>
-        <div>
-          <strong>I'm a Driver</strong>
-          <small>Drive, earn and grow with us</small>
-        </div>
-        <span>→</span>
-      </button>
-
-      <button id="backLogin" class="back-btn">
-        ← Back to Login
-      </button>
-
-    </div>
-  </section>
+    <main id="app">
+
+        <!-- HOME SCREEN -->
 
-  <!-- SIGNUP -->
-  <section id="signupScreen" class="screen auth-screen hidden">
+        <section
+            id="homeScreen"
+            class="screen active"
+        >
 
-    <div class="auth-content">
+            <div class="home-container">
+
+                <img
+                    src="logo.png"
+                    alt="Prowave Supermarket"
+                    class="game-logo"
+                >
 
-      <p class="gold-label">CREATE YOUR ACCOUNT</p>
+                <h1>
+                    Prowave Supermarket
+                </h1>
 
-      <h1>Join<br><span>DriveHub.</span></h1>
+                <p class="tagline">
+                    BUILD • MANAGE • GROW
+                </p>
 
-      <div class="input-group">
-        <label>Full Name</label>
-        <input id="signupName" class="normal-input"
-               type="text"
-               placeholder="Enter your name">
-      </div>
 
-      <div class="input-group">
-        <label>Mobile Number</label>
-        <div class="phone-input">
-          <span>🇵🇰 +92</span>
-          <input id="signupPhone" type="tel"
-                 placeholder="300 1234567">
-        </div>
-      </div>
+                <div class="cash-box">
 
-      <div class="input-group">
-        <label>Password</label>
-        <input id="signupPassword"
-               class="normal-input"
-               type="password"
-               placeholder="Create password">
-      </div>
+                    <span class="cash-icon">
+                        💰
+                    </span>
 
-      <button id="createAccountBtn" class="main-btn">
-        Create Account
-        <span>→</span>
-      </button>
+                    <div>
 
-      <button id="backToLogin" class="back-btn">
-        ← Already have an account?
-      </button>
+                        <small>
+                            YOUR CASH
+                        </small>
 
-    </div>
-    
-  </section>
-<!-- =========================
-     RIDER DASHBOARD
-========================= -->
+                        <strong id="cash">
+                            Rs. 50,000
+                        </strong>
 
-<section
-  id="riderDashboard"
-  class="screen dashboard-screen hidden"
->
+                    </div>
 
-  <header class="dashboard-header">
+                </div>
 
-    <div class="dashboard-brand">
 
-      <img
-        src="drivehub-logo.jpg"
-        class="dashboard-logo"
-        alt="DriveHub"
-      >
+                <div class="home-buttons">
 
-      <div>
-        <strong>DriveHub</strong>
-        <small>RIDER</small>
-      </div>
+                    <button
+                        class="game-button primary"
+                        data-screen="storeScreen"
+                    >
+                        🏪
+                        <span>
+                            Supermarket
+                        </span>
+                    </button>
 
-    </div>
 
-    <button
-      id="notificationBtn"
-      class="dashboard-icon"
-    >
-      🔔
-    </button>
+                    <button
+                        class="game-button"
+                        data-screen="marketScreen"
+                    >
+                        📦
+                        <span>
+                            Wholesale Market
+                        </span>
+                    </button>
 
-  </header>
 
+                    <button
+                        class="game-button"
+                        data-screen="inventoryScreen"
+                    >
+                        🎒
+                        <span>
+                            Inventory
+                        </span>
+                    </button>
 
-  <div class="dashboard-greeting">
 
-    <p>WELCOME BACK 👋</p>
+                    <button
+                        class="game-button"
+                        data-screen="upgradeScreen"
+                    >
+                        ⬆️
+                        <span>
+                            Upgrades
+                        </span>
+                    </button>
 
-    <h1>
-      Where are you<br>
-      <span>going today?</span>
-    </h1>
 
-  </div>
+                    <button
+                        class="game-button"
+                        data-screen="supplierScreen"
+                    >
+                        🚚
+                        <span>
+                            Suppliers
+                        </span>
+                    </button>
 
 
-  <!-- BOOK RIDE -->
+                    <button
+                        class="game-button"
+                        data-screen="missionScreen"
+                    >
+                        🎯
+                        <span>
+                            Missions
+                        </span>
+                    </button>
 
-  <div class="booking-card">
+                </div>
 
-    <div class="booking-heading">
+            </div>
 
-      <div>
-        <small>BOOK A RIDE</small>
-        <h2>Plan your journey</h2>
-      </div>
+        </section>
 
-      <span class="online-badge">
-        ● Available
-      </span>
 
-    </div>
+        <!-- SUPERMARKET SCREEN -->
 
+        <section
+            id="storeScreen"
+            class="screen"
+        >
 
-    <div class="location-box">
+            <header class="screen-header">
 
-      <span class="location-dot pickup"></span>
+                <button
+                    class="back-button"
+                    data-screen="homeScreen"
+                >
+                    ←
+                </button>
 
-      <div>
-        <label>Pickup</label>
+                <div>
 
-        <input
-  id="pickupInput"
-  type="text"
-  placeholder="Where are you?"
-  readonly
->
-      </div>
+                    <small>
+                        YOUR BUSINESS
+                    </small>
 
-    </div>
+                    <h2>
+                        🏪 Supermarket
+                    </h2>
 
+                </div>
 
-    <div class="location-connector"></div>
+                <strong id="storeCash">
+                    Rs. 50,000
+                </strong>
 
+            </header>
 
-    <div class="location-box">
 
-      <span class="location-dot destination"></span>
+            <div class="store-container">
 
-      <div>
-        <label>Destination</label>
+                <div class="store-sign">
+                    PROWAVE MARKET
+                </div>
 
-        <input
-  id="destinationInput"
-  type="text"
-  placeholder="Where do you want to go?"
-  readonly
->
-      </div>
 
-    </div>
+                <div class="shelves">
 
+                    <div class="shelf">
+                        🥛
+                        <span>Milk</span>
+                    </div>
 
-    <button
-      id="findRideBtn"
-      class="find-ride-btn"
-    >
-      Find a Ride
-      <span>→</span>
-    </button>
+                    <div class="shelf">
+                        🍞
+                        <span>Bread</span>
+                    </div>
 
-  <!-- RIDE OPTIONS -->
+                    <div class="shelf">
+                        🍪
+                        <span>Biscuits</span>
+                    </div>
 
-  <div class="dashboard-section">
+                    <div class="shelf">
+                        🥤
+                        <span>Drinks</span>
+                    </div>
 
-    <div class="section-heading">
+                </div>
 
-      <h3>Choose your ride</h3>
 
-      <span>Available</span>
+                <div
+                    id="customerArea"
+                    class="customer-area"
+                >
 
-    </div>
+                    <div class="empty-customers">
+                        🛍️
 
+                        <p>
+                            Open your store to attract customers
+                        </p>
 
-    <div class="ride-options">
+                    </div>
 
-      <button
-        class="ride-option active"
-        data-ride="DriveHub Go"
-      >
+                </div>
 
-        <div class="vehicle-icon">
-          🚗
-        </div>
 
-        <div class="ride-details">
+                <button
+                    id="openStoreButton"
+                    class="action-button"
+                >
+                    ▶ OPEN STORE
+                </button>
 
-          <strong>DriveHub Go</strong>
+            </div>
 
-          <small>
-            Affordable everyday ride
-          </small>
+        </section>
 
-        </div>
 
-        <div class="ride-fare">
-          <strong>Rs. —</strong>
-          <small>Estimate</small>
-        </div>
+        <!-- WHOLESALE MARKET -->
 
-      </button>
+        <section
+            id="marketScreen"
+            class="screen"
+        >
 
+            <header class="screen-header">
 
-      <button
-        class="ride-option"
-        data-ride="DriveHub Plus"
-      >
+                <button
+                    class="back-button"
+                    data-screen="homeScreen"
+                >
+                    ←
+                </button>
 
-        <div class="vehicle-icon">
-          🚘
-        </div>
+                <div>
 
-        <div class="ride-details">
+                    <small>
+                        BUY STOCK
+                    </small>
 
-          <strong>DriveHub Plus</strong>
+                    <h2>
+                        📦 Wholesale Market
+                    </h2>
 
-          <small>
-            More comfort for your journey
-          </small>
+                </div>
 
-        </div>
+            </header>
 
-        <div class="ride-fare">
-          <strong>Rs. —</strong>
-          <small>Estimate</small>
-        </div>
 
-      </button>
+            <div
+                id="marketProducts"
+                class="product-grid"
+            ></div>
 
+        </section>
 
-      <button
-        class="ride-option"
-        data-ride="DriveHub XL"
-      >
 
-        <div class="vehicle-icon">
-          🚙
-        </div>
+        <!-- INVENTORY -->
 
-        <div class="ride-details">
+        <section
+            id="inventoryScreen"
+            class="screen"
+        >
 
-          <strong>DriveHub XL</strong>
+            <header class="screen-header">
 
-          <small>
-            Extra space for groups
-          </small>
+                <button
+                    class="back-button"
+                    data-screen="homeScreen"
+                >
+                    ←
+                </button>
 
-        </div>
+                <div>
 
-        <div class="ride-fare">
-          <strong>Rs. —</strong>
-          <small>Estimate</small>
-        </div>
+                    <small>
+                        YOUR STOCK
+                    </small>
 
-      </button>
+                    <h2>
+                        🎒 Inventory
+                    </h2>
 
-    </div>
+                </div>
 
-  </div>
+            </header>
 
 
-  <!-- TRUST -->
+            <div
+                id="inventoryProducts"
+                class="product-grid"
+            ></div>
 
-  <div class="trust-row">
+        </section>
 
-    <div>
-      <b>✓</b>
-      <span>Verified drivers</span>
-    </div>
 
-    <div>
-      <b>★</b>
-      <span>Top rated</span>
-    </div>
+        <!-- UPGRADES -->
 
-    <div>
-      <b>🛡</b>
-      <span>Safe rides</span>
-    </div>
+        <section
+            id="upgradeScreen"
+            class="screen"
+        >
 
-  </div>
+            <header class="screen-header">
 
+                <button
+                    class="back-button"
+                    data-screen="homeScreen"
+                >
+                    ←
+                </button>
 
-  <!-- BOTTOM NAV -->
+                <div>
 
-  <nav class="dashboard-nav">
+                    <small>
+                        IMPROVE YOUR BUSINESS
+                    </small>
 
-    <button class="nav-item active">
-      <span>⌂</span>
-      Home
-    </button>
+                    <h2>
+                        ⬆️ Upgrades
+                    </h2>
 
-    <button class="nav-item">
-      <span>◷</span>
-      Rides
-    </button>
+                </div>
 
-    <button class="nav-item">
-      <span>💳</span>
-      Wallet
-    </button>
+            </header>
 
-    <button class="nav-item">
-      <span>●</span>
-      Profile
-    </button>
 
-  </nav>
+            <div
+                id="upgradeList"
+                class="upgrade-list"
+            ></div>
 
-</section>
-  <div id="toast" class="toast"></div>
+        </section>
 
-  <script src="script.js"></script>
+
+        <!-- SUPPLIERS -->
+
+        <section
+            id="supplierScreen"
+            class="screen"
+        >
+
+            <header class="screen-header">
+
+                <button
+                    class="back-button"
+                    data-screen="homeScreen"
+                >
+                    ←
+                </button>
+
+                <div>
+
+                    <small>
+                        STOCK SUPPLIERS
+                    </small>
+
+                    <h2>
+                        🚚 Suppliers
+                    </h2>
+
+                </div>
+
+            </header>
+
+
+            <div
+                id="supplierList"
+                class="supplier-list"
+            ></div>
+
+        </section>
+
+
+        <!-- MISSIONS -->
+
+        <section
+            id="missionScreen"
+            class="screen"
+        >
+
+            <header class="screen-header">
+
+                <button
+                    class="back-button"
+                    data-screen="homeScreen"
+                >
+                    ←
+                </button>
+
+                <div>
+
+                    <small>
+                        DAILY GOALS
+                    </small>
+
+                    <h2>
+                        🎯 Missions
+                    </h2>
+
+                </div>
+
+            </header>
+
+
+            <div
+                id="missionList"
+                class="mission-list"
+            ></div>
+
+        </section>
+
+    </main>
+
+
+    <div
+        id="notification"
+        class="notification"
+    ></div>
+
+
+    <script src="script.js"></script>
+
 </body>
+
 </html>
